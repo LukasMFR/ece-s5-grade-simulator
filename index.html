@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123c46">
+<meta name="description" content="Tableau compact ECE S5 — calcul des notes, coefficients et compensation.">
+<title>ECE S5 — Tableau de notes</title>
+<style>
+:root{color-scheme:light;--navy:#123b45;--teal:#246874;--accent:#397e88;--pale:#e9f2f3;--text:#1a3b43;--muted:#667e86;--line:#d6e1e4;--bg:#f6f9f9;--green:#166845;--green-bg:#dff3e7;--green-line:#a8d9bc;--orange:#88510d;--orange-bg:#fff0d2;--orange-line:#edc17c;--red:#aa2e38}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.42 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #67abb2;outline-offset:2px}
+.container{width:min(1260px,calc(100% - 44px));margin:0 auto}
+header{background:linear-gradient(105deg,#123b45,#236572);color:#fff;border-bottom:3px solid #8dbbc0}
+.header-inner{min-height:79px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:13px 0}
+.brand{display:flex;align-items:center;gap:13px}
+.brand-logo{font-size:28px;letter-spacing:-.08em;font-weight:850;line-height:1;border-right:1px solid #94c1c6;padding-right:17px}
+.brand-meta{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#c5e0e2;font-weight:700}
+h1{font-size:19px;line-height:1.2;letter-spacing:-.03em;font-weight:750;margin:0 0 3px}
+.header-title p{margin:0;color:#c5e0e2;font-size:12px}
+.header-tag{white-space:nowrap;border:1px solid #6d9da5;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;color:#e5f5f5}
+main{padding:20px 0 24px}
+.dashboard{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin-bottom:17px}
+.metric{min-width:177px;display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:10px;letter-spacing:.095em;text-transform:uppercase;font-weight:800;color:#5c7981}
+.metric-value{font-size:30px;line-height:1.12;font-weight:800;letter-spacing:-.045em;color:var(--navy);font-variant-numeric:tabular-nums}
+.metric-value small{font-size:13px;color:#81979d;letter-spacing:0;font-weight:650}
+.metric-state{flex:1;min-width:220px;display:flex;flex-direction:column;gap:3px;padding-left:17px;border-left:1px solid #e4ebed}
+#ue-status-text{font-weight:750;font-size:13px}
+#ue-hint{color:var(--muted);font-size:11px;line-height:1.4}
+.metric-state.good #ue-status-text{color:var(--green)}
+.metric-state.attention #ue-status-text{color:var(--orange)}
+.progress-area{width:138px;display:flex;flex-direction:column;gap:7px}
+.progress-top{display:flex;justify-content:space-between;gap:6px;align-items:center;font-size:11px;color:var(--muted)}
+#progress-label{font-weight:800;font-variant-numeric:tabular-nums;color:var(--navy)}
+.progress{width:100%;height:5px;background:#dce9eb;border-radius:5px;overflow:hidden}
+#progress-fill{display:block;width:0;height:100%;background:#3c8993;transition:width .18s ease}
+.reset{border:1px solid #bfcfd3;background:white;border-radius:6px;color:var(--navy);font-size:12px;font-weight:720;padding:8px 11px;white-space:nowrap}
+.reset:hover{background:#edf5f6}
+.section-bar{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 8px}
+h2{font-size:15px;letter-spacing:-.014em;margin:0;font-weight:800}
+.section-bar p{margin:0;font-size:11px;color:var(--muted)}
+.sheet-wrapper{border:1px solid #c8d9dc;border-radius:9px;background:white;overflow:hidden}
+table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed;font-variant-numeric:tabular-nums}
+col.course{width:26%}col.coef{width:6%}col.note{width:9.2%}col.average{width:11%}col.state{width:11%}
+thead th{font-size:11px;color:#fff;background:var(--navy);font-weight:730;text-align:center;padding:11px 6px;line-height:1.2;border-right:1px solid #37606a}
+thead th:first-child{text-align:left;padding-left:17px}thead th:last-child{border-right:0}
+tbody tr:nth-child(even){background:#f8fbfb}
+tbody td{padding:10px 8px;vertical-align:middle;text-align:center;border-top:1px solid var(--line);border-right:1px solid #e2ebed;height:65px}
+tbody tr:first-child td{border-top:0}tbody td:last-child{border-right:0}
+.subject-cell{text-align:left;padding-left:17px}
+.subject-name{display:block;font-weight:740;font-size:13px;line-height:1.22}
+.subject-sub{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+.coeff-cell{font-weight:800;color:#2e6572;font-size:14px}
+.input-cell{padding:8px 5px}
+.note-input{width:100%;min-width:0;text-align:center;background:#fff;border:1px solid #c9d9dd;border-radius:5px;padding:7px 4px;min-height:37px;color:#1e4852;font-weight:680;font-size:13px;font-variant-numeric:tabular-nums}
+.note-input::placeholder{color:#a6b9bf;font-weight:450}
+.note-input:hover{border-color:#78a3ab}
+.note-input:focus{border-color:#317987;outline:2px solid #75b5bd;outline-offset:0}
+.note-input.invalid{border-color:var(--red);outline-color:var(--red);background:#fff5f5}
+.cell-error{font-size:9px;color:var(--red);display:none;margin-top:2px}
+.cell-error.visible{display:block}
+.empty-note{color:#c6d5d9;font-size:14px}
+.weight-hint{display:block;color:#66818a;font-size:9px;margin-top:3px;line-height:1}
+.average-cell{padding:8px 5px;transition:background-color .12s,color .12s}
+.average-value{font-weight:850;font-size:17px;letter-spacing:-.03em;white-space:nowrap;display:block}
+.average-cell.pass{background:var(--green-bg);color:var(--green);box-shadow:inset 0 0 0 1px var(--green-line)}
+.average-cell.compensated{background:var(--orange-bg);color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange-line)}
+.status-cell{font-size:11px;color:#57707a;font-weight:680;line-height:1.2}
+.status-cell.pass{color:var(--green)}.status-cell.compensated{color:var(--orange)}
+tfoot td{padding:11px 9px;background:#e3eff0;border-top:2px solid #96bbc0;font-size:12px;font-weight:770;color:var(--navy);text-align:center}
+tfoot td:first-child{text-align:left;padding-left:17px}
+tfoot .foot-average{font-weight:850;font-size:17px;letter-spacing:-.025em}
+.legend{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;margin:13px 0 0;font-size:11px;color:#607780}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:13px;height:13px;display:inline-block;border:1px solid #ccdadd;background:#fff;border-radius:3px;flex:none}
+.legend i.green{background:var(--green-bg);border-color:var(--green-line)}.legend i.orange{background:var(--orange-bg);border-color:var(--orange-line)}
+.info{margin-top:18px;border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}
+.info summary{cursor:pointer;list-style:none;padding:12px 15px;font-weight:740;font-size:12px;color:var(--navy);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.info summary::-webkit-details-marker{display:none}
+.info summary::after{content:"⌄";font-size:18px;font-weight:400;color:#6a9199}
+.info[open] summary::after{transform:rotate(180deg)}
+.info[open] summary{border-bottom:1px solid var(--line)}
+.info-body{padding:13px 16px;font-size:11px;color:#57707a}
+.formulas{display:grid;grid-template-columns:max-content 1fr;gap:8px 15px;align-items:baseline}
+.formulas strong{font-weight:750;color:#2c515b}
+.formulas code{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#174b58;white-space:normal;overflow-wrap:anywhere}
+.info-body p{margin:11px 0 0;line-height:1.6}
+footer{font-size:10px;color:#718991;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:1060px){.container{width:min(100% - 26px,1260px)}col.course{width:25%}col.coef{width:6%}col.note{width:9.6%}col.average{width:11%}col.state{width:10%}.subject-name{font-size:12px}tbody td{padding-left:4px;padding-right:4px}.subject-cell{padding-left:12px}}
+@media(max-width:810px){
+ .header-inner{min-height:70px;gap:8px}.brand-logo{font-size:25px;padding-right:12px}.brand-meta{display:none}h1{font-size:17px}.header-title p{font-size:11px}.header-tag{display:none}
+ main{padding-top:12px}.dashboard{padding:12px;gap:10px}.metric{min-width:115px}.metric-value{font-size:27px}.metric-state{border:0;padding:0;min-width:0;flex:1}.progress-area{width:120px}.reset{margin-left:auto}
+ .section-bar p{display:none}
+ .sheet-wrapper{border:0;background:transparent;overflow:visible}table,tbody,tfoot{display:block;width:100%}thead{display:none}
+ tbody{display:grid;grid-template-columns:1fr;gap:10px}
+ tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:#fff!important;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+ tbody td{height:auto;border:0;border-top:1px solid #e5edef;padding:9px 11px}
+ tbody tr td:first-child,tbody tr td:nth-child(2){border-top:0}
+ .subject-cell{grid-column:1/2;text-align:left;padding:12px 10px 10px 13px}
+ .subject-name{font-size:13px}.subject-sub{margin-top:2px}
+ .coeff-cell{grid-column:2/3;text-align:right;padding:13px 13px 10px 8px;font-size:12px}
+ .coeff-cell::before{content:"Coef. ";color:var(--muted);font-size:11px;font-weight:550}
+ .input-cell{display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:4px;padding:9px 12px}
+ .input-cell::before{content:attr(data-label);font-size:10px;font-weight:730;color:#607a82}
+ .input-cell.is-unused{display:none}
+ .note-input{text-align:left;padding:8px 10px;font-size:14px}
+ .empty-note{display:none}.weight-hint{font-size:10px;margin-top:0}
+ .average-cell{grid-column:1/2;text-align:left;padding:11px 12px}.average-cell::before{content:"Moyenne";display:block;font-size:10px;font-weight:740;letter-spacing:.025em;color:#607a82;margin-bottom:3px}
+ .average-cell.pass::before{color:var(--green)}.average-cell.compensated::before{color:var(--orange)}
+ .status-cell{grid-column:2/3;text-align:right;display:flex;justify-content:flex-end;align-items:center;padding:10px 13px;font-size:12px}
+ tfoot{margin-top:10px;border:1px solid #adcbd0;border-radius:8px;overflow:hidden}
+ tfoot tr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}tfoot td{border:0;background:#e3eff0;padding:10px 12px}tfoot td:first-child{padding-left:12px}tfoot td:last-child{text-align:right}
+}
+@media(max-width:480px){.container{width:calc(100% - 20px)}.brand{gap:9px}.header-inner{padding:10px 0}.brand-logo{font-size:22px;padding-right:11px}h1{font-size:16px}.header-title p{font-size:10px}.dashboard{gap:10px}.metric{min-width:100px}.metric-value{font-size:24px}.metric-state{min-width:160px}.progress-area{width:100%;flex-direction:row;align-items:center;gap:10px}.progress-top{width:95px;flex:none}.progress{flex:1}.reset{padding:6px 10px}.formulas{grid-template-columns:1fr;gap:2px}.formulas code{margin-bottom:7px}}
+@media print{body{background:#fff}header{print-color-adjust:exact;-webkit-print-color-adjust:exact}main{padding:12px 0}.reset{display:none}.sheet-wrapper{break-inside:avoid}.note-input{border:0;padding:3px}.info{display:none}.average-cell.pass,.average-cell.compensated{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="container header-inner"><div class="brand"><span class="brand-logo" aria-label="ECE">ECE</span><span class="brand-meta">Engineering<br>School</span></div><div class="header-title"><h1>Tableau de notes · S5</h1><p>UE Fondamentaux — Sciences &amp; Techniques</p></div><span class="header-tag">ING3 · Coef. UE 16</span></div></header>
+<main class="container">
+<section class="dashboard" aria-label="Résumé de l'UE">
+ <div class="metric"><span class="eyebrow">Moyenne de l'UE</span><span class="metric-value"><span id="ue-average" aria-live="polite">—</span> <small>/ 20</small></span></div>
+ <div id="ue-status" class="metric-state" aria-live="polite"><span id="ue-status-text">En attente des notes</span><span id="ue-hint">Les cases vides ne comptent pas comme des zéros.</span></div>
+ <div class="progress-area"><div class="progress-top"><span>Saisies</span><span id="progress-label">0 / 10</span></div><div class="progress" id="progress-bar" role="progressbar" aria-label="Notes saisies" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="progress-fill"></span></div></div>
+ <button type="button" class="reset" id="reset-button" title="Effacer les 10 notes">↺ Réinitialiser</button>
+</section>
+<div class="section-bar"><h2>Les 4 matières</h2><p>10 évaluations · coefficients appliqués par bloc · sans arrondi intermédiaire</p></div>
+<div class="sheet-wrapper"><table aria-label="Tableau de simulation des notes"><colgroup><col class="course"><col class="coef"><col class="note"><col class="note"><col class="note"><col class="note"><col class="note"><col class="average"><col class="state"></colgroup>
+<thead><tr><th scope="col">Matière</th><th scope="col">Coef.</th><th scope="col">DS1</th><th scope="col">DS2</th><th scope="col">NS1</th><th scope="col">NS2</th><th scope="col">Projet</th><th scope="col">Moyenne</th><th scope="col">État</th></tr></thead>
+<tbody id="notes-body"></tbody>
+<tfoot><tr><td colspan="7">Moyenne pondérée de l'UE <span style="font-weight:500">· Coefficient 16</span></td><td class="foot-average" id="ue-table-average">—</td><td id="ue-table-state">—</td></tr></tfoot>
+</table></div>
+<div class="legend" aria-label="Légende"><span><i class="green" aria-hidden="true"></i> <strong>Vert</strong> : ≥ 10,00</span><span><i class="orange" aria-hidden="true"></i> <strong>Orange</strong> : 7,00 à &lt; 10,00 avec compensation</span><span><i aria-hidden="true"></i> <strong>Blanc</strong> : autres cas</span><span>La compensation apparaît seulement après les 10 notes.</span></div>
+<details class="info"><summary>Coefficients et calculs détaillés</summary><div class="info-body">
+<div class="formulas"><strong>Maths · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Électro · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Python · coef. 6</strong><code>((NS1 + NS2) / 2 + 2 × Projet) / 3</code><strong>BDD · coef. 4</strong><code>((NS1 + NS2) / 2 + 2 × DS1) / 3</code><strong>Moyenne UE · coef. 16</strong><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16</code></div>
+<p>Dans Python et BDD, le bloc « contrôles continus » correspond à la moyenne des deux NS et reçoit un coefficient de bloc 1 ; le projet Python et le DS1 BDD reçoivent un coefficient de bloc 2. Les calculs conservent leur précision complète : seules les valeurs affichées sont arrondies à deux décimales.</p>
+<p>Les moyennes sont provisoires tant que les 10 notes ne sont pas renseignées. Les champs absents sont exclus du calcul provisoire, sans être traités comme 0. La compensation en orange n'est appliquée qu'avec toutes les notes renseignées, une moyenne UE ≥ 10 et une moyenne de matière entre 7 inclus et 10 exclu. Ceci est un simulateur personnel non officiel, sans garantie sur les règles administratives de l'établissement.</p>
+</div></details>
+<footer><span>ECE S5 · Simulateur personnel non officiel</span><span id="storage-note">Notes sauvegardées localement dans ce navigateur lorsque c'est possible.</span></footer>
+</main>
+<script>
+"use strict";
+// MOTEUR IDENTIQUE A LA VERSION PRECEDENTE
+  const COURSES = [
+    { id: "maths", title: "Mathématiques 5", short: "Maths", weight: 3, groups: [
+      { title: "Moyenne des examens", weight: 1, notes: [{ id: "math_ds1", label: "DS1", weight: 1 }, { id: "math_ds2", label: "DS2", weight: 1 }] }
+    ] },
+    { id: "electro", title: "Électrostatique & Magnétostatique", short: "Électro", weight: 3, groups: [
+      { title: "Moyenne des examens", weight: 1, notes: [{ id: "elec_ds1", label: "DS1", weight: 1 }, { id: "elec_ds2", label: "DS2", weight: 1 }] }
+    ] },
+    { id: "python", title: "Programmation en Python", short: "Python", weight: 6, groups: [
+      { title: "Moyenne des contrôles continus", weight: 1, notes: [{ id: "py_ns1", label: "NS1", weight: 1 }, { id: "py_ns2", label: "NS2", weight: 1 }] },
+      { title: "Projet", weight: 2, notes: [{ id: "py_proj", label: "Note de projet", weight: 1 }] }
+    ] },
+    { id: "bdd", title: "Bases de données", short: "BDD", weight: 4, groups: [
+      { title: "Moyenne des contrôles continus", weight: 1, notes: [{ id: "bdd_ns1", label: "NS1", weight: 1 }, { id: "bdd_ns2", label: "NS2", weight: 1 }] },
+      { title: "Moyenne des examens", weight: 2, notes: [{ id: "bdd_ds1", label: "DS1", weight: 1 }] }
+    ] }
+  ];
+  const TOTAL_COURSE_WEIGHT = 16;
+  const TOTAL_NOTES = 10;
+  // Formats acceptés : 0 à 20, point ou virgule, sans limite artificielle à 2 décimales.
+  function parseGrade(raw) {
+    if (raw === null || raw === undefined || String(raw).trim() === "") return null;
+    const normalized = String(raw).trim().replace(",", ".");
+    if (!/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(normalized)) return NaN;
+    const result = Number(normalized);
+    return Number.isFinite(result) && result >= 0 && result <= 20 ? result : NaN;
+  }
+  function weightedAverage(items) {
+    let numerator = 0, denominator = 0;
+    for (const item of items) {
+      if (item.value !== null && Number.isFinite(item.value)) {
+        numerator += item.value * item.weight;
+        denominator += item.weight;
+      }
+    }
+    return denominator > 0 ? numerator / denominator : null;
+  }
+  function calculate(values) {
+    const courses = COURSES.map(course => {
+      let entered = 0;
+      const groups = course.groups.map(group => {
+        const noteItems = group.notes.map(note => {
+          const value = parseGrade(values[note.id]);
+          if (value !== null && Number.isFinite(value)) entered++;
+          return { value, weight: note.weight };
+        });
+        return { value: weightedAverage(noteItems), weight: group.weight };
+      });
+      const total = course.groups.reduce((sum, group) => sum + group.notes.length, 0);
+      return { id: course.id, title: course.title, weight: course.weight, average: weightedAverage(groups), entered, total, complete: entered === total };
+    });
+    const entered = courses.reduce((sum, course) => sum + course.entered, 0);
+    const complete = entered === TOTAL_NOTES;
+    const average = weightedAverage(courses.map(course => ({ value: course.average, weight: course.weight })));
+    const allAboveSeven = complete && courses.every(course => course.average >= 7);
+    return { courses, entered, complete, average, allAboveSeven, totalWeight: TOTAL_COURSE_WEIGHT };
+  }
+
+const format2 = new Intl.NumberFormat("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:false});
+const STORE_KEY="ece-s5-notes-v1"; // Compatible avec les données de la version précédente.
+const COLUMN_IDS={
+  maths:{ds1:"math_ds1",ds2:"math_ds2"},
+  electro:{ds1:"elec_ds1",ds2:"elec_ds2"},
+  python:{ns1:"py_ns1",ns2:"py_ns2",projet:"py_proj"},
+  bdd:{ds1:"bdd_ds1",ns1:"bdd_ns1",ns2:"bdd_ns2"}
+};
+const COLUMNS=[{id:"ds1",label:"DS1"},{id:"ds2",label:"DS2"},{id:"ns1",label:"NS1"},{id:"ns2",label:"NS2"},{id:"projet",label:"Projet"}];
+const data={};
+const tbody=document.getElementById("notes-body");
+const fmt=n=>n===null?"—":format2.format(n);
+function make(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+function load(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY)||"{}");if(s&&typeof s==="object"&&!Array.isArray(s)){for(const c of COURSES)for(const g of c.groups)for(const n of g.notes)if(typeof s[n.id]==="string")data[n.id]=s[n.id];}}catch(e){storageFail();}}
+function storageFail(){document.getElementById("storage-note").textContent="Stockage local indisponible : notes non conservées après fermeture.";}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(data));}catch(e){storageFail();}}
+function render(){
+ for(const course of COURSES){
+  const tr=make("tr");tr.id="course-"+course.id;
+  const subject=make("th","subject-cell");subject.scope="row";
+  subject.append(make("span","subject-name",course.title));
+  const sub=course.id==="maths"||course.id==="electro"?"Examens (DS1 + DS2)":course.id==="python"?"Contrôles continus + projet":"Contrôles continus + examen";
+  subject.append(make("span","subject-sub",sub));
+  tr.append(subject,make("td","coeff-cell",String(course.weight)));
+  const noteMap=new Map(course.groups.flatMap(group=>group.notes.map(note=>[note.id,{note,group}])));
+  for(const col of COLUMNS){
+   const td=make("td","input-cell");td.dataset.label=col.label;
+   const noteId=COLUMN_IDS[course.id]?.[col.id];
+   if(!noteId){td.classList.add("is-unused");td.append(make("span","empty-note","—"));tr.append(td);continue;}
+   const meta=noteMap.get(noteId);
+   const input=make("input","note-input");input.type="text";input.inputMode="decimal";input.autocomplete="off";input.spellcheck=false;
+   input.id="input-"+noteId;input.dataset.noteId=noteId;input.placeholder="—";
+   input.setAttribute("aria-label",course.title+" — "+col.label+" sur 20" );
+   input.setAttribute("aria-describedby","error-"+noteId);
+   const initial=data[noteId]==null?null:parseGrade(data[noteId]);
+   input.value=initial!==null&&Number.isFinite(initial)?fmt(initial):(data[noteId]||"");
+   input.addEventListener("input",()=>{data[noteId]=input.value;save();update();});
+   input.addEventListener("focus",()=>{const raw=data[noteId];if(raw!=null&&Number.isFinite(parseGrade(raw)))input.value=String(raw).replace(".",",");input.select();});
+   input.addEventListener("blur",()=>{const val=parseGrade(data[noteId]);if(val!==null&&Number.isFinite(val))input.value=fmt(val);});
+   input.addEventListener("keydown",evt=>{if(evt.key==="Enter"){evt.preventDefault();const fields=[...document.querySelectorAll(".note-input")];const next=fields[fields.indexOf(input)+1];if(next)next.focus();else input.blur();}});
+   td.append(input);
+   if(meta&&meta.group.weight===2){td.append(make("small","weight-hint","Bloc ×2"));}
+   const error=make("span","cell-error","Note entre 0 et 20");error.id="error-"+noteId;td.append(error);
+   tr.append(td);
+  }
+  const avg=make("td","average-cell");avg.id="result-"+course.id;
+  const value=make("span","average-value","—");value.id="value-"+course.id;avg.append(value);
+  avg.setAttribute("aria-label","Moyenne de "+course.title);
+  const status=make("td","status-cell","—");status.id="status-"+course.id;
+  tr.append(avg,status);tbody.append(tr);
+ }
+}
+function update(){
+ for(const input of document.querySelectorAll(".note-input")){
+  const val=parseGrade(data[input.dataset.noteId]);const invalid=val!==null&&!Number.isFinite(val);
+  input.classList.toggle("invalid",invalid);input.setAttribute("aria-invalid",String(invalid));
+  document.getElementById("error-"+input.dataset.noteId).classList.toggle("visible",invalid);
+ }
+ const result=calculate(data);
+ const compensation=result.complete&&result.average>=10;
+ for(const course of result.courses){
+  const avg=course.average;
+  const green=avg!==null&&avg>=10;
+  const orange=avg!==null&&course.complete&&compensation&&avg>=7&&avg<10;
+  const cell=document.getElementById("result-"+course.id);
+  const status=document.getElementById("status-"+course.id);
+  cell.classList.toggle("pass",green);cell.classList.toggle("compensated",orange);
+  status.classList.toggle("pass",green&&course.complete);status.classList.toggle("compensated",orange);
+  document.getElementById("value-"+course.id).textContent=fmt(avg);
+  if(avg===null)status.textContent="Non renseignée";
+  else if(!course.complete)status.textContent="Provisoire "+course.entered+"/"+course.total;
+  else if(green)status.textContent="≥ 10";
+  else if(orange)status.textContent="Compensée";
+  else if(avg>=7)status.textContent="Sous 10";
+  else status.textContent="Sous 7";
+ }
+ document.getElementById("ue-average").textContent=fmt(result.average);
+ document.getElementById("ue-table-average").textContent=fmt(result.average);
+ document.getElementById("progress-label").textContent=result.entered+" / "+TOTAL_NOTES;
+ document.getElementById("progress-fill").style.width=result.entered/TOTAL_NOTES*100+"%";
+ document.getElementById("progress-bar").setAttribute("aria-valuenow",String(result.entered));
+ const state=document.getElementById("ue-status");const text=document.getElementById("ue-status-text");const hint=document.getElementById("ue-hint");
+ state.className="metric-state";
+ if(result.entered===0){text.textContent="En attente des notes";hint.textContent="Les cases vides ne valent pas zéro.";}
+ else if(!result.complete){text.textContent="Moyenne provisoire";hint.textContent="Compensation calculée après saisie des 10 notes.";}
+ else if(result.average>=10&&result.allAboveSeven){state.classList.add("good");text.textContent="Moyenne UE ≥ 10";hint.textContent="Compensation possible pour les matières entre 7 et 10.";}
+ else if(result.average>=10){state.classList.add("attention");text.textContent="Moyenne UE ≥ 10";hint.textContent="Au moins une matière sous 7,00.";}
+ else{state.classList.add("attention");text.textContent="Moyenne UE sous 10";hint.textContent="Pas de compensation activée.";}
+ document.getElementById("ue-table-state").textContent=result.complete?(result.average>=10?"≥ 10":"< 10"):"Provisoire";
+}
+load();render();update();
+document.getElementById("reset-button").addEventListener("click",()=>{
+ if(!Object.values(data).some(v=>v!==""))return;
+ if(!window.confirm("Effacer toutes les notes saisies ?"))return;
+ for(const k of Object.keys(data))delete data[k];
+ for(const input of document.querySelectorAll(".note-input"))input.value="";
+ save();update();
+});
+</script>
+</body></html>
