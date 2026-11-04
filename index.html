@@ -28,6 +28,7 @@ main{padding:20px 0 24px}
 .eyebrow{font-size:10px;letter-spacing:.095em;text-transform:uppercase;font-weight:800;color:#5c7981}
 .metric-value{font-size:30px;line-height:1.12;font-weight:800;letter-spacing:-.045em;color:var(--navy);font-variant-numeric:tabular-nums}
 .metric-value small{font-size:13px;color:#81979d;letter-spacing:0;font-weight:650}
+.bonus-control{display:flex;flex-direction:column;gap:3px;width:105px}.bonus-control .note-input{min-height:34px}.bonus-detail{font-size:11px;color:var(--muted)}
 .metric-state{flex:1;min-width:220px;display:flex;flex-direction:column;gap:3px;padding-left:17px;border-left:1px solid #e4ebed}
 #ue-status-text{font-weight:750;font-size:13px}
 #ue-hint{color:var(--muted);font-size:11px;line-height:1.4}
@@ -124,22 +125,23 @@ footer{font-size:10px;color:#718991;display:flex;justify-content:space-between;g
 <header><div class="container header-inner"><div class="brand"><span class="brand-logo" aria-label="ECE">ECE</span><span class="brand-meta">Engineering<br>School</span></div><div class="header-title"><h1>Tableau de notes · S5</h1><p>UE Fondamentaux — Sciences &amp; Techniques</p></div><span class="header-tag">ING3 · Coef. UE 16</span></div></header>
 <main class="container">
 <section class="dashboard" aria-label="Résumé de l'UE">
- <div class="metric"><span class="eyebrow">Moyenne de l'UE</span><span class="metric-value"><span id="ue-average" aria-live="polite">—</span> <small>/ 20</small></span></div>
+ <div class="metric"><span class="eyebrow">Moyenne de l'UE</span><span class="metric-value"><span id="ue-average" aria-live="polite">—</span> <small>/ 20</small></span><span id="bonus-detail" class="bonus-detail">Moyenne pondérée + bonus</span></div>
+ <div class="bonus-control"><label class="eyebrow" for="bonus-input">Bonus / 20</label><input id="bonus-input" class="note-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-describedby="bonus-error"><span id="bonus-error" class="cell-error">Bonus entre 0 et 1</span></div>
  <div id="ue-status" class="metric-state" aria-live="polite"><span id="ue-status-text">En attente des notes</span><span id="ue-hint">Les cases vides ne comptent pas comme des zéros.</span></div>
  <div class="progress-area"><div class="progress-top"><span>Saisies</span><span id="progress-label">0 / 10</span></div><div class="progress" id="progress-bar" role="progressbar" aria-label="Notes saisies" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="progress-fill"></span></div></div>
- <button type="button" class="reset" id="reset-button" title="Effacer les 10 notes">↺ Réinitialiser</button>
+ <button type="button" class="reset" id="reset-button" title="Effacer les notes et le bonus">↺ Réinitialiser</button>
 </section>
 <div class="section-bar"><h2>Les 4 matières</h2><p>10 évaluations · coefficients appliqués par bloc · sans arrondi intermédiaire</p></div>
 <div class="sheet-wrapper"><table aria-label="Tableau de simulation des notes"><colgroup><col class="course"><col class="coef"><col class="note"><col class="note"><col class="note"><col class="note"><col class="note"><col class="average"><col class="state"></colgroup>
 <thead><tr><th scope="col">Matière</th><th scope="col">Coef.</th><th scope="col">DS1</th><th scope="col">DS2</th><th scope="col">NS1</th><th scope="col">NS2</th><th scope="col">Projet</th><th scope="col">Moyenne</th><th scope="col">État</th></tr></thead>
 <tbody id="notes-body"></tbody>
-<tfoot><tr><td colspan="7">Moyenne pondérée de l'UE <span style="font-weight:500">· Coefficient 16</span></td><td class="foot-average" id="ue-table-average">—</td><td id="ue-table-state">—</td></tr></tfoot>
+<tfoot><tr><td colspan="7">Moyenne de l'UE avec bonus <span style="font-weight:500">· Coefficient 16</span></td><td class="foot-average" id="ue-table-average">—</td><td id="ue-table-state">—</td></tr></tfoot>
 </table></div>
 <div class="legend" aria-label="Légende"><span><i class="green" aria-hidden="true"></i> <strong>Vert</strong> : ≥ 10,00</span><span><i class="orange" aria-hidden="true"></i> <strong>Orange</strong> : 7,00 à &lt; 10,00 avec compensation</span><span><i aria-hidden="true"></i> <strong>Blanc</strong> : autres cas</span><span>La compensation apparaît seulement après les 10 notes.</span></div>
 <details class="info"><summary>Coefficients et calculs détaillés</summary><div class="info-body">
-<div class="formulas"><strong>Maths · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Électro · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Python · coef. 6</strong><code>((NS1 + NS2) / 2 + 2 × Projet) / 3</code><strong>BDD · coef. 4</strong><code>((NS1 + NS2) / 2 + 2 × DS1) / 3</code><strong>Moyenne UE · coef. 16</strong><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16</code></div>
+<div class="formulas"><strong>Maths · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Électro · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Python · coef. 6</strong><code>((NS1 + NS2) / 2 + 2 × Projet) / 3</code><strong>BDD · coef. 4</strong><code>((NS1 + NS2) / 2 + 2 × DS1) / 3</code><strong>Moyenne UE avec bonus</strong><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16 + bonus (de 0 à 1)</code></div>
 <p>Dans Python et BDD, le bloc « contrôles continus » correspond à la moyenne des deux NS et reçoit un coefficient de bloc 1 ; le projet Python et le DS1 BDD reçoivent un coefficient de bloc 2. Les calculs conservent leur précision complète : seules les valeurs affichées sont arrondies à deux décimales.</p>
-<p>Les moyennes sont provisoires tant que les 10 notes ne sont pas renseignées. Les champs absents sont exclus du calcul provisoire, sans être traités comme 0. La compensation en orange n'est appliquée qu'avec toutes les notes renseignées, une moyenne UE ≥ 10 et une moyenne de matière entre 7 inclus et 10 exclu. Ceci est un simulateur personnel non officiel, sans garantie sur les règles administratives de l'établissement.</p>
+<p>Les moyennes sont provisoires tant que les 10 notes ne sont pas renseignées. Les champs absents sont exclus du calcul provisoire, sans être traités comme 0. La compensation en orange n'est appliquée qu'avec toutes les notes renseignées, une moyenne UE avec bonus ≥ 10 et une moyenne de matière entre 7 inclus et 10 exclu. Ceci est un simulateur personnel non officiel, sans garantie sur les règles administratives de l'établissement.</p>
 </div></details>
 <footer><span>ECE S5 · Simulateur personnel non officiel</span><span id="storage-note">Notes sauvegardées localement dans ce navigateur lorsque c'est possible.</span></footer>
 </main>
@@ -198,9 +200,13 @@ footer{font-size:10px;color:#718991;display:flex;justify-content:space-between;g
     });
     const entered = courses.reduce((sum, course) => sum + course.entered, 0);
     const complete = entered === TOTAL_NOTES;
-    const average = weightedAverage(courses.map(course => ({ value: course.average, weight: course.weight })));
+    const baseAverage = weightedAverage(courses.map(course => ({ value: course.average, weight: course.weight })));
+    const parsedBonus = parseGrade(values.bonus);
+    const bonusValid = parsedBonus === null || (Number.isFinite(parsedBonus) && parsedBonus <= 1);
+    const bonus = parsedBonus === null ? 0 : parsedBonus;
+    const average = baseAverage === null || !bonusValid ? null : baseAverage + bonus;
     const allAboveSeven = complete && courses.every(course => course.average >= 7);
-    return { courses, entered, complete, average, allAboveSeven, totalWeight: TOTAL_COURSE_WEIGHT };
+    return { courses, entered, complete, average, baseAverage, bonus, bonusValid, allAboveSeven, totalWeight: TOTAL_COURSE_WEIGHT };
   }
 
 const format2 = new Intl.NumberFormat("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:false});
@@ -216,7 +222,7 @@ const data={};
 const tbody=document.getElementById("notes-body");
 const fmt=n=>n===null?"—":format2.format(n);
 function make(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
-function load(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY)||"{}");if(s&&typeof s==="object"&&!Array.isArray(s)){for(const c of COURSES)for(const g of c.groups)for(const n of g.notes)if(typeof s[n.id]==="string")data[n.id]=s[n.id];}}catch(e){storageFail();}}
+function load(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY)||"{}");if(s&&typeof s==="object"&&!Array.isArray(s)){for(const c of COURSES)for(const g of c.groups)for(const n of g.notes)if(typeof s[n.id]==="string")data[n.id]=s[n.id];if(typeof s.bonus==="string")data.bonus=s.bonus;}}catch(e){storageFail();}}
 function storageFail(){document.getElementById("storage-note").textContent="Stockage local indisponible : notes non conservées après fermeture.";}
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(data));}catch(e){storageFail();}}
 function render(){
@@ -242,7 +248,7 @@ function render(){
    input.addEventListener("input",()=>{data[noteId]=input.value;save();update();});
    input.addEventListener("focus",()=>{const raw=data[noteId];if(raw!=null&&Number.isFinite(parseGrade(raw)))input.value=String(raw).replace(".",",");input.select();});
    input.addEventListener("blur",()=>{const val=parseGrade(data[noteId]);if(val!==null&&Number.isFinite(val))input.value=fmt(val);});
-   input.addEventListener("keydown",evt=>{if(evt.key==="Enter"){evt.preventDefault();const fields=[...document.querySelectorAll(".note-input")];const next=fields[fields.indexOf(input)+1];if(next)next.focus();else input.blur();}});
+   input.addEventListener("keydown",evt=>{if(evt.key==="Enter"){evt.preventDefault();const fields=[...document.querySelectorAll(".note-input[data-note-id]")];const next=fields[fields.indexOf(input)+1];if(next)next.focus();else input.blur();}});
    td.append(input);
    if(meta&&meta.group.weight===2){td.append(make("small","weight-hint","Bloc ×2"));}
    const error=make("span","cell-error","Note entre 0 et 20");error.id="error-"+noteId;td.append(error);
@@ -256,13 +262,16 @@ function render(){
  }
 }
 function update(){
- for(const input of document.querySelectorAll(".note-input")){
+ for(const input of document.querySelectorAll(".note-input[data-note-id]")){
   const val=parseGrade(data[input.dataset.noteId]);const invalid=val!==null&&!Number.isFinite(val);
   input.classList.toggle("invalid",invalid);input.setAttribute("aria-invalid",String(invalid));
   document.getElementById("error-"+input.dataset.noteId).classList.toggle("visible",invalid);
  }
  const result=calculate(data);
- const compensation=result.complete&&result.average>=10;
+ const bonusInput=document.getElementById("bonus-input");
+ bonusInput.classList.toggle("invalid",!result.bonusValid);bonusInput.setAttribute("aria-invalid",String(!result.bonusValid));
+ document.getElementById("bonus-error").classList.toggle("visible",!result.bonusValid);
+ const compensation=result.complete&&result.bonusValid&&result.average>=10;
  for(const course of result.courses){
   const avg=course.average;
   const green=avg!==null&&avg>=10;
@@ -281,22 +290,28 @@ function update(){
  }
  document.getElementById("ue-average").textContent=fmt(result.average);
  document.getElementById("ue-table-average").textContent=fmt(result.average);
+ document.getElementById("bonus-detail").textContent=result.baseAverage===null?"Moyenne pondérée + bonus":fmt(result.baseAverage)+" + "+(result.bonusValid?fmt(result.bonus):"bonus invalide")+" = "+fmt(result.average);
  document.getElementById("progress-label").textContent=result.entered+" / "+TOTAL_NOTES;
  document.getElementById("progress-fill").style.width=result.entered/TOTAL_NOTES*100+"%";
  document.getElementById("progress-bar").setAttribute("aria-valuenow",String(result.entered));
  const state=document.getElementById("ue-status");const text=document.getElementById("ue-status-text");const hint=document.getElementById("ue-hint");
  state.className="metric-state";
  if(result.entered===0){text.textContent="En attente des notes";hint.textContent="Les cases vides ne valent pas zéro.";}
+ else if(!result.bonusValid){state.classList.add("attention");text.textContent="Bonus invalide";hint.textContent="Saisissez un bonus entre 0 et 1.";}
  else if(!result.complete){text.textContent="Moyenne provisoire";hint.textContent="Compensation calculée après saisie des 10 notes.";}
  else if(result.average>=10&&result.allAboveSeven){state.classList.add("good");text.textContent="Moyenne UE ≥ 10";hint.textContent="Compensation possible pour les matières entre 7 et 10.";}
  else if(result.average>=10){state.classList.add("attention");text.textContent="Moyenne UE ≥ 10";hint.textContent="Au moins une matière sous 7,00.";}
  else{state.classList.add("attention");text.textContent="Moyenne UE sous 10";hint.textContent="Pas de compensation activée.";}
- document.getElementById("ue-table-state").textContent=result.complete?(result.average>=10?"≥ 10":"< 10"):"Provisoire";
+ document.getElementById("ue-table-state").textContent=!result.bonusValid?"Bonus invalide":result.complete?(result.average>=10?"≥ 10":"< 10"):"Provisoire";
 }
-load();render();update();
+load();render();
+const bonusInput=document.getElementById("bonus-input");
+bonusInput.value=data.bonus||"";
+bonusInput.addEventListener("input",()=>{data.bonus=bonusInput.value;save();update();});
+update();
 document.getElementById("reset-button").addEventListener("click",()=>{
  if(!Object.values(data).some(v=>v!==""))return;
- if(!window.confirm("Effacer toutes les notes saisies ?"))return;
+ if(!window.confirm("Effacer toutes les notes et le bonus saisis ?"))return;
  for(const k of Object.keys(data))delete data[k];
  for(const input of document.querySelectorAll(".note-input"))input.value="";
  save();update();
