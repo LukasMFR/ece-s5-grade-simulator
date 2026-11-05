@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f9f9f4">
   <meta name="page-type" content="software">
   <meta name="site-kind" content="software">
-  <meta name="description" content="Simulez la moyenne de l’UE Fondamentaux au S5 de l’ECE avec les coefficients et le bonus.">
+  <meta name="description" content="Simulez les moyennes des quatre UE et la moyenne générale du semestre 5 de l’ECE.">
   <title>Simulateur de notes S5 · ECE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,30 +33,23 @@
     <section class="hero" aria-labelledby="page-title">
       <div class="wrap workspace">
         <div class="intro">
-          <p class="kicker">ING3 <span aria-hidden="true">/</span> Coefficient UE 16</p>
+          <p class="kicker">ING3 <span aria-hidden="true">/</span> 4 UE · 30 ECTS</p>
           <h1 id="page-title">Notes du<br class="title-break"> semestre 5</h1>
-          <p class="intro-description">UE Fondamentaux <span>Sciences &amp; Techniques</span></p>
 
           <section class="summary" aria-labelledby="summary-title">
-            <h2 id="summary-title">Moyenne de l’UE</h2>
-            <p class="metric-value" aria-live="polite"><strong id="ue-average">—</strong><span>/ 20</span></p>
-            <p class="bonus-detail" id="bonus-detail">Moyenne pondérée avec bonus</p>
-            <div class="metric-state" id="ue-status" aria-live="polite">
-              <strong id="ue-status-text">En attente des notes</strong>
-              <p id="ue-hint">Les champs vides sont exclus du calcul.</p>
-            </div>
-            <div class="summary-controls">
-              <div class="progress-area">
-                <div class="progress-top"><span>Notes saisies</span><strong id="progress-label">0 / 10</strong></div>
-                <div class="progress" id="progress-bar" role="progressbar" aria-label="Notes saisies" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="progress-fill"></span></div>
-              </div>
-              <div class="bonus-control">
-                <div><label for="bonus-input">Bonus</label><p id="bonus-range">De 0 à 1 point</p></div>
-                <input id="bonus-input" class="note-input" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0" aria-describedby="bonus-range">
-                <p id="bonus-error" class="cell-error" hidden>Le bonus doit être compris entre 0 et 1.</p>
-              </div>
+            <h2 id="summary-title">Moyenne générale</h2>
+            <p class="metric-value" aria-live="polite"><strong id="semester-average">—</strong><span>/ 20</span></p>
+            <p class="bonus-detail" id="semester-status">Les champs vides sont exclus du calcul.</p>
+            <div class="progress-area">
+              <div class="progress-top"><span>Évaluations renseignées</span><strong id="progress-label">0 / 20</strong></div>
+              <div class="progress" id="progress-bar" role="progressbar" aria-label="Évaluations renseignées" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><span id="progress-fill"></span></div>
             </div>
           </section>
+
+          <nav class="unit-index" aria-label="Accéder à une UE">
+            <h2>Moyennes par UE</h2>
+            <div id="unit-links"></div>
+          </nav>
         </div>
 
         <div class="ledger">
@@ -67,9 +60,8 @@
                 Réinitialiser
               </button>
             </div>
-            <div class="course ledger-labels" aria-hidden="true"><span>Matière</span><span>Évaluations sur 20</span><span>Moyenne</span></div>
             <div id="notes-body"></div>
-            <p class="gradebook-foot"><span class="block-badge">×2</span> Ce bloc compte double dans la moyenne de la matière.</p>
+            <p class="gradebook-foot">Les marques ×2 et ×3 indiquent le poids de la note ou de son bloc.</p>
           </section>
           <details class="rules" id="calculs">
             <summary>
@@ -82,10 +74,17 @@
                 <div><dt>Électrostatique &amp; Magnétostatique · coef. 3</dt><dd><code>(DS1 + DS2) / 2</code></dd></div>
                 <div><dt>Programmation en Python · coef. 6</dt><dd><code>(NS1 + 2 × Projet) / 3</code></dd></div>
                 <div><dt>Bases de données · coef. 4</dt><dd><code>((NS1 + NS2 + Participation) / 3 + 2 × DS1) / 3</code></dd></div>
-                <div><dt>Moyenne de l’UE</dt><dd><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16 + bonus</code></dd></div>
+                <div><dt>UE Fondamentaux</dt><dd><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16 + bonus</code></dd></div>
+                <div><dt>Travailler en entreprise · coef. 1</dt><dd><code>(Écrit + 2 × Oral) / 3</code></dd></div>
+                <div><dt>Bases de gestion · coef. 1</dt><dd><code>DS1</code></dd></div>
+                <div><dt>UE Adaptabilité</dt><dd><code>(Travailler en entreprise + Bases de gestion) / 2</code></dd></div>
+                <div><dt>Anglais 5 · coef. 1</dt><dd><code>(3 × NS1 + DS1) / 4</code></dd></div>
+                <div><dt>Acquis Entreprise 5 · coef. 9</dt><dd><code>(2 × Évaluation entreprise + Rapport maître d’apprentissage + Rapport tuteur + 2 × Soutenance) / 6</code></dd></div>
+                <div><dt>Expérience Entreprise 5 · coef. 1</dt><dd>Retour d’expérience à valider séparément. La moyenne chiffrée de l’UE est celle d’Acquis Entreprise 5.</dd></div>
+                <div><dt>Moyenne générale</dt><dd><code>(16 × Fondamentaux + 2 × Adaptabilité + 2 × Développement + 10 × Expérience entreprise) / 30</code></dd></div>
               </dl>
-              <p>Le calcul provisoire utilise les notes valides déjà saisies. Seul l’affichage des moyennes est arrondi à deux décimales.</p>
-              <p>Une matière entre 7 inclus et 10 exclu apparaît comme compensée lorsque toutes les notes sont saisies et que la moyenne de l’UE avec bonus atteint 10.</p>
+              <p>Les moyennes provisoires utilisent les notes valides déjà saisies. La moyenne générale utilise les UE qui ont une moyenne chiffrée, pondérées par leurs ECTS. Seul l’affichage est arrondi à deux décimales.</p>
+              <p>La compensation s’applique à une matière dont la moyenne est comprise entre 7 inclus et 10 exclu lorsque son UE est complète et atteint 10. Les moyennes des autres UE n’interviennent pas.</p>
             </div>
           </details>
         </div>
@@ -104,7 +103,7 @@
   <dialog id="reset-dialog" aria-labelledby="reset-title" aria-describedby="reset-description">
     <form method="dialog">
       <h2 id="reset-title">Effacer la simulation ?</h2>
-      <p id="reset-description">Toutes les notes et le bonus seront effacés de ce navigateur.</p>
+      <p id="reset-description">Toutes les notes, le bonus et le statut du retour d’expérience seront effacés de ce navigateur.</p>
       <div class="dialog-actions">
         <button class="btn btn--secondary" value="cancel" autofocus>Annuler</button>
         <button class="btn btn--primary" value="reset">Effacer les notes</button>
@@ -112,12 +111,55 @@
     </form>
   </dialog>
 
+  <template id="unit-template">
+    <section class="unit">
+      <div class="unit-head">
+        <div>
+          <p class="unit-credits"></p>
+          <h3></h3>
+        </div>
+        <div class="unit-result">
+          <strong class="unit-average">—</strong><span> / 20</span>
+          <p class="unit-status"></p>
+        </div>
+      </div>
+      <div class="course ledger-labels" aria-hidden="true"><span>Matière</span><span>Évaluations</span><span>Moyenne</span></div>
+      <div class="unit-courses"></div>
+    </section>
+  </template>
+
+  <template id="unit-link-template">
+    <a class="unit-link">
+      <span><strong class="unit-link-title"></strong><small class="unit-link-credits"></small></span>
+      <span class="unit-average">—</span>
+    </a>
+  </template>
+
+  <template id="bonus-template">
+    <div class="bonus-control" id="foundation-bonus">
+      <div><label for="bonus-input">Bonus Fondamentaux</label><p id="bonus-range">De 0 à 1 point</p></div>
+      <input id="bonus-input" class="note-input" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0" aria-describedby="bonus-range">
+      <p id="bonus-error" class="cell-error" hidden>Le bonus doit être compris entre 0 et 1.</p>
+    </div>
+  </template>
+
+  <template id="feedback-template">
+    <div class="note-field feedback-field">
+      <label>Retour d’expérience entreprise</label>
+      <select class="feedback-select">
+        <option value="">À renseigner</option>
+        <option value="validated">Validé</option>
+        <option value="not-validated">Non validé</option>
+      </select>
+    </div>
+  </template>
+
   <template id="course-template">
     <article class="course">
       <div class="course-heading">
-        <img class="course-icon" width="24" height="24" alt="">
+        <img class="course-icon" width="24" height="24" loading="lazy" alt="">
         <div>
-          <h3></h3>
+          <h4></h4>
           <p class="course-coefficient"></p>
         </div>
       </div>
