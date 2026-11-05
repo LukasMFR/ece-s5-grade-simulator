@@ -128,20 +128,20 @@ footer{font-size:10px;color:#718991;display:flex;justify-content:space-between;g
  <div class="metric"><span class="eyebrow">Moyenne de l'UE</span><span class="metric-value"><span id="ue-average" aria-live="polite">—</span> <small>/ 20</small></span><span id="bonus-detail" class="bonus-detail">Moyenne pondérée + bonus</span></div>
  <div class="bonus-control"><label class="eyebrow" for="bonus-input">Bonus / 20</label><input id="bonus-input" class="note-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-describedby="bonus-error"><span id="bonus-error" class="cell-error">Bonus entre 0 et 1</span></div>
  <div id="ue-status" class="metric-state" aria-live="polite"><span id="ue-status-text">En attente des notes</span><span id="ue-hint">Les cases vides ne comptent pas comme des zéros.</span></div>
- <div class="progress-area"><div class="progress-top"><span>Saisies</span><span id="progress-label">0 / 10</span></div><div class="progress" id="progress-bar" role="progressbar" aria-label="Notes saisies" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span id="progress-fill"></span></div></div>
+ <div class="progress-area"><div class="progress-top"><span>Saisies</span><span id="progress-label">0 / 9</span></div><div class="progress" id="progress-bar" role="progressbar" aria-label="Notes saisies" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><span id="progress-fill"></span></div></div>
  <button type="button" class="reset" id="reset-button" title="Effacer les notes et le bonus">↺ Réinitialiser</button>
 </section>
-<div class="section-bar"><h2>Les 4 matières</h2><p>10 évaluations · coefficients appliqués par bloc · sans arrondi intermédiaire</p></div>
+<div class="section-bar"><h2>Les 4 matières</h2><p>9 évaluations · coefficients appliqués par bloc · sans arrondi intermédiaire</p></div>
 <div class="sheet-wrapper"><table aria-label="Tableau de simulation des notes"><colgroup><col class="course"><col class="coef"><col class="note"><col class="note"><col class="note"><col class="note"><col class="note"><col class="average"><col class="state"></colgroup>
 <thead><tr><th scope="col">Matière</th><th scope="col">Coef.</th><th scope="col">DS1</th><th scope="col">DS2</th><th scope="col">NS1</th><th scope="col">NS2</th><th scope="col">Projet</th><th scope="col">Moyenne</th><th scope="col">État</th></tr></thead>
 <tbody id="notes-body"></tbody>
 <tfoot><tr><td colspan="7">Moyenne de l'UE avec bonus <span style="font-weight:500">· Coefficient 16</span></td><td class="foot-average" id="ue-table-average">—</td><td id="ue-table-state">—</td></tr></tfoot>
 </table></div>
-<div class="legend" aria-label="Légende"><span><i class="green" aria-hidden="true"></i> <strong>Vert</strong> : ≥ 10,00</span><span><i class="orange" aria-hidden="true"></i> <strong>Orange</strong> : 7,00 à &lt; 10,00 avec compensation</span><span><i aria-hidden="true"></i> <strong>Blanc</strong> : autres cas</span><span>La compensation apparaît seulement après les 10 notes.</span></div>
+<div class="legend" aria-label="Légende"><span><i class="green" aria-hidden="true"></i> <strong>Vert</strong> : ≥ 10,00</span><span><i class="orange" aria-hidden="true"></i> <strong>Orange</strong> : 7,00 à &lt; 10,00 avec compensation</span><span><i aria-hidden="true"></i> <strong>Blanc</strong> : autres cas</span><span>La compensation apparaît seulement après les 9 notes.</span></div>
 <details class="info"><summary>Coefficients et calculs détaillés</summary><div class="info-body">
-<div class="formulas"><strong>Maths · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Électro · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Python · coef. 6</strong><code>((NS1 + NS2) / 2 + 2 × Projet) / 3</code><strong>BDD · coef. 4</strong><code>((NS1 + NS2) / 2 + 2 × DS1) / 3</code><strong>Moyenne UE avec bonus</strong><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16 + bonus (de 0 à 1)</code></div>
-<p>Dans Python et BDD, le bloc « contrôles continus » correspond à la moyenne des deux NS et reçoit un coefficient de bloc 1 ; le projet Python et le DS1 BDD reçoivent un coefficient de bloc 2. Les calculs conservent leur précision complète : seules les valeurs affichées sont arrondies à deux décimales.</p>
-<p>Les moyennes sont provisoires tant que les 10 notes ne sont pas renseignées. Les champs absents sont exclus du calcul provisoire, sans être traités comme 0. La compensation en orange n'est appliquée qu'avec toutes les notes renseignées, une moyenne UE avec bonus ≥ 10 et une moyenne de matière entre 7 inclus et 10 exclu. Ceci est un simulateur personnel non officiel, sans garantie sur les règles administratives de l'établissement.</p>
+<div class="formulas"><strong>Maths · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Électro · coef. 3</strong><code>(DS1 + DS2) / 2</code><strong>Python · coef. 6</strong><code>(NS1 + 2 × Projet) / 3</code><strong>BDD · coef. 4</strong><code>((NS1 + NS2) / 2 + 2 × DS1) / 3</code><strong>Moyenne UE avec bonus</strong><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16 + bonus (de 0 à 1)</code></div>
+<p>En Python, la NS1 reçoit un coefficient de bloc 1 et le projet un coefficient de bloc 2. En BDD, la moyenne des deux NS reçoit un coefficient de bloc 1 et le DS1 un coefficient de bloc 2. Les calculs conservent leur précision complète : seules les valeurs affichées sont arrondies à deux décimales.</p>
+<p>Les moyennes sont provisoires tant que les 9 notes ne sont pas renseignées. Les champs absents sont exclus du calcul provisoire, sans être traités comme 0. La compensation en orange n'est appliquée qu'avec toutes les notes renseignées, une moyenne UE avec bonus ≥ 10 et une moyenne de matière entre 7 inclus et 10 exclu. Ceci est un simulateur personnel non officiel, sans garantie sur les règles administratives de l'établissement.</p>
 </div></details>
 <footer><span>ECE S5 · Simulateur personnel non officiel</span><span id="storage-note">Notes sauvegardées localement dans ce navigateur lorsque c'est possible.</span></footer>
 </main>
@@ -156,7 +156,7 @@ footer{font-size:10px;color:#718991;display:flex;justify-content:space-between;g
       { title: "Moyenne des examens", weight: 1, notes: [{ id: "elec_ds1", label: "DS1", weight: 1 }, { id: "elec_ds2", label: "DS2", weight: 1 }] }
     ] },
     { id: "python", title: "Programmation en Python", short: "Python", weight: 6, groups: [
-      { title: "Moyenne des contrôles continus", weight: 1, notes: [{ id: "py_ns1", label: "NS1", weight: 1 }, { id: "py_ns2", label: "NS2", weight: 1 }] },
+      { title: "Moyenne des contrôles continus", weight: 1, notes: [{ id: "py_ns1", label: "NS1", weight: 1 }] },
       { title: "Projet", weight: 2, notes: [{ id: "py_proj", label: "Note de projet", weight: 1 }] }
     ] },
     { id: "bdd", title: "Bases de données", short: "BDD", weight: 4, groups: [
@@ -165,7 +165,7 @@ footer{font-size:10px;color:#718991;display:flex;justify-content:space-between;g
     ] }
   ];
   const TOTAL_COURSE_WEIGHT = 16;
-  const TOTAL_NOTES = 10;
+  const TOTAL_NOTES = 9;
   // Formats acceptés : 0 à 20, point ou virgule, sans limite artificielle à 2 décimales.
   function parseGrade(raw) {
     if (raw === null || raw === undefined || String(raw).trim() === "") return null;
@@ -214,7 +214,7 @@ const STORE_KEY="ece-s5-notes-v1"; // Compatible avec les données de la version
 const COLUMN_IDS={
   maths:{ds1:"math_ds1",ds2:"math_ds2"},
   electro:{ds1:"elec_ds1",ds2:"elec_ds2"},
-  python:{ns1:"py_ns1",ns2:"py_ns2",projet:"py_proj"},
+  python:{ns1:"py_ns1",projet:"py_proj"},
   bdd:{ds1:"bdd_ds1",ns1:"bdd_ns1",ns2:"bdd_ns2"}
 };
 const COLUMNS=[{id:"ds1",label:"DS1"},{id:"ds2",label:"DS2"},{id:"ns1",label:"NS1"},{id:"ns2",label:"NS2"},{id:"projet",label:"Projet"}];
@@ -298,7 +298,7 @@ function update(){
  state.className="metric-state";
  if(result.entered===0){text.textContent="En attente des notes";hint.textContent="Les cases vides ne valent pas zéro.";}
  else if(!result.bonusValid){state.classList.add("attention");text.textContent="Bonus invalide";hint.textContent="Saisissez un bonus entre 0 et 1.";}
- else if(!result.complete){text.textContent="Moyenne provisoire";hint.textContent="Compensation calculée après saisie des 10 notes.";}
+ else if(!result.complete){text.textContent="Moyenne provisoire";hint.textContent="Compensation calculée après saisie des 9 notes.";}
  else if(result.average>=10&&result.allAboveSeven){state.classList.add("good");text.textContent="Moyenne UE ≥ 10";hint.textContent="Compensation possible pour les matières entre 7 et 10.";}
  else if(result.average>=10){state.classList.add("attention");text.textContent="Moyenne UE ≥ 10";hint.textContent="Au moins une matière sous 7,00.";}
  else{state.classList.add("attention");text.textContent="Moyenne UE sous 10";hint.textContent="Pas de compensation activée.";}
