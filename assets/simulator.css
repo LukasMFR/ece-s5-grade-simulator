@@ -48,7 +48,7 @@ svg { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; str
 .masthead-inner { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
 .identity { display: inline-flex; align-items: center; gap: var(--s-3); color: var(--muted); font-size: 14px; transition: color var(--m-in); }
 .identity:hover { color: var(--action); }
-.wordmark { display: block; flex: none; width: 130px; height: auto; }
+.wordmark { color: var(--brand); font-size: 18px; }
 .masthead-link { display: inline-flex; align-items: center; gap: var(--s-1); color: var(--action); font-size: 14px; }
 
 .hero { padding-block: var(--s-8) var(--s-7); }
@@ -152,7 +152,6 @@ dialog p { margin-top: var(--s-2); color: var(--muted); }
   .masthead-inner { min-height: 55px; gap: var(--s-2); }
   .identity, .masthead-link { font-size: 13px; }
   .identity { gap: var(--s-2); }
-  .wordmark { width: 90px; }
   .workspace { gap: var(--s-6); }
   h1 { font-size: clamp(34px, 9.4vw, 56px); }
   .intro-description { margin-top: var(--s-3); }
