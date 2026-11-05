@@ -12,12 +12,16 @@ const COURSES = [
     { title: "Projet", weight: 2, notes: [{ id: "py_proj", label: "Note de projet", weight: 1 }] }
   ] },
   { id: "bdd", title: "Bases de données", short: "BDD", weight: 4, groups: [
-    { title: "Moyenne des contrôles continus", weight: 1, notes: [{ id: "bdd_ns1", label: "NS1", weight: 1 }, { id: "bdd_ns2", label: "NS2", weight: 1 }] },
+    { title: "Moyenne des contrôles continus", weight: 1, notes: [
+      { id: "bdd_ns1", label: "NS1", weight: 1 },
+      { id: "bdd_ns2", label: "NS2", weight: 1 },
+      { id: "bdd_participation", label: "Participation", weight: 1 }
+    ] },
     { title: "Moyenne des examens", weight: 2, notes: [{ id: "bdd_ds1", label: "DS1", weight: 1 }] }
   ] }
 ];
 const TOTAL_COURSE_WEIGHT = 16;
-const TOTAL_NOTES = 9;
+const TOTAL_NOTES = 10;
 // Formats acceptés : 0 à 20, point ou virgule, sans limite artificielle à 2 décimales.
 function parseGrade(raw) {
   if (raw === null || raw === undefined || String(raw).trim() === "") return null;
@@ -239,7 +243,7 @@ function update() {
     tone = "attention";
   } else if (result.entered > 0 && !result.complete) {
     status = "Moyenne provisoire";
-    hint = "Compensation calculée après saisie des 9 notes.";
+    hint = "Compensation calculée après saisie de toutes les notes.";
   } else if (compensation) {
     status = "Moyenne UE ≥ 10";
     hint = result.allAboveSeven ? "Les matières entre 7 et 10 peuvent être compensées." : "Au moins une matière est sous 7.";
