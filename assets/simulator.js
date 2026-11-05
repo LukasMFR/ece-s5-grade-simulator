@@ -122,13 +122,12 @@ function renderCourses() {
   const noteTemplate = byId("note-template");
   const notesBody = byId("notes-body");
 
-  for (const [index, course] of COURSES.entries()) {
+  for (const course of COURSES) {
     const row = courseTemplate.content.firstElementChild.cloneNode(true);
     const title = row.querySelector("h3");
     title.id = "course-" + course.id;
     title.textContent = course.title;
     row.setAttribute("aria-labelledby", title.id);
-    row.querySelector(".course-number").textContent = String(index + 1).padStart(2, "0");
     row.querySelector(".course-coefficient").textContent = "Coefficient " + course.weight;
 
     const fields = row.querySelector(".course-fields");
@@ -223,7 +222,6 @@ function update() {
   }
 
   byId("ue-average").textContent = fmt(result.average);
-  byId("grade-fill").style.width = Math.min((result.average ?? 0) / 20 * 100, 100) + "%";
   byId("bonus-detail").textContent = result.baseAverage === null || !result.bonusValid
     ? "Moyenne pondérée avec bonus"
     : fmt(result.baseAverage) + " + " + fmt(result.bonus) + " de bonus";

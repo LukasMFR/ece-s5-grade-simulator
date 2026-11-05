@@ -1,27 +1,27 @@
 <!doctype html>
-<html lang="fr" data-type="software" data-radius="soft" data-buttons="solid" data-motion>
+<html lang="fr" data-type="software" data-radius="sharp" data-buttons="solid" data-motion>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f3f2ef">
+  <meta name="theme-color" content="#ecebe7">
   <meta name="page-type" content="software">
   <meta name="site-kind" content="software">
   <meta name="description" content="Simulez la moyenne de l’UE Fondamentaux au S5 de l’ECE avec les coefficients et le bonus.">
   <title>Simulateur de notes S5 · ECE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&amp;family=Geist+Mono:wght@400..500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400..700&amp;family=JetBrains+Mono:wght@400..500&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/motion/motion.css">
   <link rel="stylesheet" href="assets/simulator.css">
   <script defer src="assets/simulator.js"></script>
 </head>
 <body id="top">
-  <!-- Software · Stone and blueprint / Geist · live app frame, centred hero adapted to direct note entry. -->
+  <!-- Software · split hero · Olive on bone / Host Grotesk · live gradebook, ruled paper. -->
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="skip-link" href="#notes">Aller aux notes</a>
       <a class="identity" href="#top" aria-label="ECE S5, haut de page">
-        <span class="wordmark" aria-hidden="true">ECE</span><span>Simulateur S5</span>
+        <strong class="wordmark">ECE</strong><span>Simulateur de notes</span>
       </a>
       <a class="m-link masthead-link" href="#calculs">Règles de calcul
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v9m-3.5-3.5L8 12l3.5-3.5"/></svg>
@@ -31,33 +31,19 @@
 
   <main>
     <section class="hero" aria-labelledby="page-title">
-      <div class="wrap">
+      <div class="wrap workspace">
         <div class="intro">
-          <div>
-            <p class="kicker"><span class="kicker-line"></span> ING3 <span class="separator">/</span> Semestre 05</p>
-            <h1 id="page-title">Simulateur de notes</h1>
-            <p class="intro-description">UE Fondamentaux · Sciences &amp; Techniques</p>
-          </div>
-          <div class="ue-coefficient">
-            <span>Coefficient UE</span><strong>16</strong>
-          </div>
-        </div>
+          <p class="kicker">ING3 <span aria-hidden="true">/</span> Coefficient UE 16</p>
+          <h1 id="page-title">Notes du<br class="title-break"> semestre 5</h1>
+          <p class="intro-description">UE Fondamentaux <span>Sciences &amp; Techniques</span></p>
 
-        <div class="workspace app-frame" data-visual>
           <section class="summary" aria-labelledby="summary-title">
-            <div class="summary-head">
-              <h2 id="summary-title">Moyenne de l’UE</h2>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18h16M6 14l4-4 3 2 5-6m-4 0h4v4"/></svg>
-            </div>
-            <p class="metric-value" aria-live="polite"><strong id="ue-average">—</strong><span> / 20</span></p>
+            <h2 id="summary-title">Moyenne de l’UE</h2>
+            <p class="metric-value" aria-live="polite"><strong id="ue-average">—</strong><span>/ 20</span></p>
             <p class="bonus-detail" id="bonus-detail">Moyenne pondérée avec bonus</p>
-            <div class="grade-scale" aria-hidden="true">
-              <div class="grade-track"><span id="grade-fill"></span></div>
-              <div class="grade-labels"><span>0</span><span>10</span><span>20</span></div>
-            </div>
             <div class="metric-state" id="ue-status" aria-live="polite">
-              <span class="state-dot" aria-hidden="true"></span>
-              <div><strong id="ue-status-text">En attente des notes</strong><p id="ue-hint">Les champs vides sont exclus du calcul.</p></div>
+              <strong id="ue-status-text">En attente des notes</strong>
+              <p id="ue-hint">Les champs vides sont exclus du calcul.</p>
             </div>
             <div class="summary-controls">
               <div class="progress-area">
@@ -71,47 +57,45 @@
               </div>
             </div>
           </section>
+        </div>
 
-          <section class="gradebook" id="notes" tabindex="-1" aria-labelledby="notes-title">
+        <div class="ledger">
+          <section class="gradebook app-frame" id="notes" data-visual tabindex="-1" aria-labelledby="notes-title">
             <div class="gradebook-head">
-              <div><h2 id="notes-title">Notes par matière</h2><p>4 matières · 9 évaluations</p></div>
+              <h2 id="notes-title">Notes par matière</h2>
               <button class="btn btn--secondary reset" id="reset-button" type="button" disabled>
-                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 1 1.7 4.2M4 6v4h4"/></svg>
                 Réinitialiser
               </button>
             </div>
+            <div class="course ledger-labels" aria-hidden="true"><span>Matière</span><span>Évaluations sur 20</span><span>Moyenne</span></div>
             <div id="notes-body"></div>
-            <p class="gradebook-foot"><span class="block-badge">×2</span> Le bloc de cette évaluation compte double dans la matière.</p>
+            <p class="gradebook-foot"><span class="block-badge">×2</span> Ce bloc compte double dans la moyenne de la matière.</p>
           </section>
+          <details class="rules" id="calculs">
+            <summary>
+              <strong>Règles de calcul</strong>
+              <svg class="chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg>
+            </summary>
+            <div class="rules-body">
+              <dl class="formulas">
+                <div><dt>Mathématiques 5 · coef. 3</dt><dd><code>(DS1 + DS2) / 2</code></dd></div>
+                <div><dt>Électrostatique &amp; Magnétostatique · coef. 3</dt><dd><code>(DS1 + DS2) / 2</code></dd></div>
+                <div><dt>Programmation en Python · coef. 6</dt><dd><code>(NS1 + 2 × Projet) / 3</code></dd></div>
+                <div><dt>Bases de données · coef. 4</dt><dd><code>((NS1 + NS2) / 2 + 2 × DS1) / 3</code></dd></div>
+                <div><dt>Moyenne de l’UE</dt><dd><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16 + bonus</code></dd></div>
+              </dl>
+              <p>Le calcul provisoire utilise les notes valides déjà saisies. Seul l’affichage des moyennes est arrondi à deux décimales.</p>
+              <p>Une matière entre 7 inclus et 10 exclu apparaît comme compensée lorsque les 9 notes sont saisies et que la moyenne de l’UE avec bonus atteint 10.</p>
+            </div>
+          </details>
         </div>
       </div>
     </section>
-
-    <div class="wrap">
-      <details class="rules" id="calculs">
-        <summary>
-          <span class="rules-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2m4 0h2m-8 4h2m4 0h2m-8 3h2m4 0h2"/></svg></span>
-          <span><strong>Règles de calcul</strong><small>Coefficients, bonus et compensation</small></span>
-          <svg class="chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg>
-        </summary>
-        <div class="rules-body">
-          <dl class="formulas">
-            <div><dt>Mathématiques 5 · coef. 3</dt><dd><code>(DS1 + DS2) / 2</code></dd></div>
-            <div><dt>Électrostatique &amp; Magnétostatique · coef. 3</dt><dd><code>(DS1 + DS2) / 2</code></dd></div>
-            <div><dt>Programmation en Python · coef. 6</dt><dd><code>(NS1 + 2 × Projet) / 3</code></dd></div>
-            <div><dt>Bases de données · coef. 4</dt><dd><code>((NS1 + NS2) / 2 + 2 × DS1) / 3</code></dd></div>
-            <div><dt>Moyenne de l’UE</dt><dd><code>(3 × Maths + 3 × Électro + 6 × Python + 4 × BDD) / 16 + bonus</code></dd></div>
-          </dl>
-          <p>Le calcul provisoire utilise les notes valides déjà saisies. Seul l’affichage des moyennes est arrondi à deux décimales.</p>
-          <p>Une matière entre 7 inclus et 10 exclu apparaît comme compensée lorsque les 9 notes sont saisies et que la moyenne de l’UE avec bonus atteint 10.</p>
-        </div>
-      </details>
-    </div>
   </main>
 
   <footer class="wrap site-footer">
     <span>ECE S5 · Simulateur personnel non officiel</span>
-    <span id="storage-note"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4.5" y="8.5" width="11" height="8" rx="1.5"/><path d="M7 8.5V6a3 3 0 0 1 6 0v2.5"/></svg>Notes enregistrées dans ce navigateur</span>
+    <span id="storage-note">Notes enregistrées dans ce navigateur</span>
   </footer>
 
   <dialog id="reset-dialog" aria-labelledby="reset-title" aria-describedby="reset-description">
@@ -128,8 +112,8 @@
   <template id="course-template">
     <article class="course">
       <div class="course-heading">
-        <span class="course-number" aria-hidden="true"></span>
-        <div><h3></h3><p class="course-coefficient"></p></div>
+        <h3></h3>
+        <p class="course-coefficient"></p>
       </div>
       <div class="course-fields"></div>
       <div class="course-result">
