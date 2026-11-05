@@ -128,6 +128,7 @@ function renderCourses() {
     title.id = "course-" + course.id;
     title.textContent = course.title;
     row.setAttribute("aria-labelledby", title.id);
+    row.querySelector(".course-icon").src = "assets/marks/" + course.id + ".webp";
     row.querySelector(".course-coefficient").textContent = "Coefficient " + course.weight;
 
     const fields = row.querySelector(".course-fields");

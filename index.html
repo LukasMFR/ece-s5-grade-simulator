@@ -3,25 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ecebe7">
+  <meta name="theme-color" content="#f9f9f4">
   <meta name="page-type" content="software">
   <meta name="site-kind" content="software">
   <meta name="description" content="Simulez la moyenne de l’UE Fondamentaux au S5 de l’ECE avec les coefficients et le bonus.">
   <title>Simulateur de notes S5 · ECE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400..700&amp;family=JetBrains+Mono:wght@400..500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&amp;family=Funnel+Sans:wght@400..700&amp;family=JetBrains+Mono:wght@400..500&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/motion/motion.css">
   <link rel="stylesheet" href="assets/simulator.css">
   <script defer src="assets/simulator.js"></script>
 </head>
 <body id="top">
-  <!-- Software · split hero · Olive on bone / Host Grotesk · live gradebook, ruled paper. -->
+  <!-- Software · split layout · ECE palette and Funnel typefaces · live gradebook. -->
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="skip-link" href="#notes">Aller aux notes</a>
       <a class="identity" href="#top" aria-label="ECE S5, haut de page">
-        <strong class="wordmark">ECE</strong><span>Simulateur de notes</span>
+        <img class="wordmark" src="assets/marks/ece.webp" width="390" height="136" alt=""><span>Simulateur S5</span>
       </a>
       <a class="m-link masthead-link" href="#calculs">Règles de calcul
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v9m-3.5-3.5L8 12l3.5-3.5"/></svg>
@@ -94,7 +94,10 @@
   </main>
 
   <footer class="wrap site-footer">
-    <span>ECE S5 · Simulateur personnel non officiel</span>
+    <div>
+      <p>ECE S5 · Simulateur personnel non officiel</p>
+      <p class="asset-credit">Pictogrammes <a href="https://lucide.dev/">Lucide</a> · Logo Python, marque de la <a href="https://www.python.org/community/logos/">Python Software Foundation</a></p>
+    </div>
     <span id="storage-note">Notes enregistrées dans ce navigateur</span>
   </footer>
 
@@ -112,8 +115,11 @@
   <template id="course-template">
     <article class="course">
       <div class="course-heading">
-        <h3></h3>
-        <p class="course-coefficient"></p>
+        <img class="course-icon" width="24" height="24" alt="">
+        <div>
+          <h3></h3>
+          <p class="course-coefficient"></p>
+        </div>
       </div>
       <div class="course-fields"></div>
       <div class="course-result">
