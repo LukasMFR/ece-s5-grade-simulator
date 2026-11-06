@@ -100,11 +100,7 @@ function calculateCourse(course, values) {
       if (Number.isFinite(value)) entered++;
       return { value, weight: note.weight };
     });
-    // A previously entered NS1 remains available while its new components are blank.
-    const useSavedGrade = group.id && group.notes.every(note => !String(values[note.id] ?? "").trim());
-    const savedGrade = useSavedGrade ? parseGrade(values[group.id]) : null;
-    const legacy = Number.isFinite(savedGrade);
-    return { id: group.id, value: legacy ? savedGrade : weightedAverage(notes), weight: group.weight, legacy };
+    return { id: group.id, value: weightedAverage(notes), weight: group.weight };
   });
   const total = course.groups.reduce((sum, group) => sum + group.notes.length, 0);
   return { id: course.id, weight: course.weight, average: weightedAverage(groups), groups, entered, total, complete: entered === total };
@@ -165,7 +161,6 @@ function load() {
     if (!stored || typeof stored !== "object" || Array.isArray(stored)) return;
     for (const course of COURSES) {
       for (const group of course.groups) {
-        if (group.id && typeof stored[group.id] === "string") data[group.id] = stored[group.id];
         for (const note of group.notes) {
           if (typeof stored[note.id] === "string") data[note.id] = stored[note.id];
         }
@@ -333,7 +328,6 @@ function updateCourse(course, compensation) {
   if (view.nsSummary) {
     const ns = course.groups.find(group => group.id);
     view.nsSummary.querySelector("output").textContent = fmt(ns.value);
-    view.nsSummary.querySelector(".ns-legacy").hidden = !ns.legacy;
   }
   const average = course.average;
   const passed = average !== null && average >= 10;
