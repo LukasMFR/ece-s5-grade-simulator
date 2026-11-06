@@ -43,7 +43,13 @@ const UNITS = [
     id: "developpement", title: "Développement personnel et interculturel", short: "Développement", credits: 2,
     courses: [
       { id: "english", title: "Anglais 5", weight: 1, groups: [
-        { weight: 3, notes: [{ id: "english_ns1", label: "NS1", weight: 1 }] },
+        { id: "english_ns1", weight: 3, notes: [
+          { id: "english_news", label: "Présentations d’actualité", weight: 20 },
+          { id: "english_article", label: "Article Hard News", weight: 20 },
+          { id: "english_participation", label: "Débats improvisés et participation", weight: 20 },
+          { id: "english_debate_individual", label: "Débat final · individuel", weight: 20 },
+          { id: "english_debate_team", label: "Débat final · équipe", weight: 20 }
+        ] },
         { weight: 1, notes: [{ id: "english_ds1", label: "DS1", weight: 1 }] }
       ] }
     ]
@@ -94,10 +100,14 @@ function calculateCourse(course, values) {
       if (Number.isFinite(value)) entered++;
       return { value, weight: note.weight };
     });
-    return { value: weightedAverage(notes), weight: group.weight };
+    // A previously entered NS1 remains available while its new components are blank.
+    const useSavedGrade = group.id && group.notes.every(note => !String(values[note.id] ?? "").trim());
+    const savedGrade = useSavedGrade ? parseGrade(values[group.id]) : null;
+    const legacy = Number.isFinite(savedGrade);
+    return { id: group.id, value: legacy ? savedGrade : weightedAverage(notes), weight: group.weight, legacy };
   });
   const total = course.groups.reduce((sum, group) => sum + group.notes.length, 0);
-  return { id: course.id, weight: course.weight, average: weightedAverage(groups), entered, total, complete: entered === total };
+  return { id: course.id, weight: course.weight, average: weightedAverage(groups), groups, entered, total, complete: entered === total };
 }
 
 function calculate(values) {
@@ -155,6 +165,7 @@ function load() {
     if (!stored || typeof stored !== "object" || Array.isArray(stored)) return;
     for (const course of COURSES) {
       for (const group of course.groups) {
+        if (group.id && typeof stored[group.id] === "string") data[group.id] = stored[group.id];
         for (const note of group.notes) {
           if (typeof stored[note.id] === "string") data[note.id] = stored[note.id];
         }
@@ -204,7 +215,12 @@ function renderCourse(course) {
   const notes = course.groups.flatMap(group => group.notes.map(note => ({ note, group })));
   // Keep the familiar DS, NS and Projet entry order from the previous interface.
   if (FOUNDATION_COURSES.includes(course)) notes.sort((a, b) => noteLabel(a.note).localeCompare(noteLabel(b.note), "fr"));
+  let nsSummary;
   for (const { note, group } of notes) {
+    if (group.id && !nsSummary) {
+      nsSummary = byId("ns-summary-template").content.firstElementChild.cloneNode(true);
+      fields.append(nsSummary);
+    }
     const field = byId("note-template").content.firstElementChild.cloneNode(true);
     const label = field.querySelector("label");
     const input = field.querySelector("input");
@@ -216,14 +232,15 @@ function renderCourse(course) {
     label.htmlFor = input.id;
     label.textContent = name;
     input.setAttribute("aria-label", course.title + " — " + name + " sur 20");
-    const multiplier = group.weight > 1 ? group.weight : note.weight;
+    const multiplier = group.id ? note.weight : group.weight > 1 ? group.weight : note.weight;
     if (multiplier > 1) {
       const badge = document.createElement("span");
       badge.className = "block-badge";
-      badge.textContent = "×" + multiplier;
+      badge.textContent = group.id ? multiplier + " %" : "×" + multiplier;
       badge.setAttribute("aria-hidden", "true");
       label.append(badge);
-      input.setAttribute("aria-label", input.getAttribute("aria-label") + ", coefficient " + multiplier);
+      const weighting = group.id ? multiplier + " % du NS1" : "coefficient " + multiplier;
+      input.setAttribute("aria-label", input.getAttribute("aria-label") + ", " + weighting);
     }
 
     const initial = parseGrade(data[note.id]);
@@ -255,6 +272,7 @@ function renderCourse(course) {
   }
 
   courseViews.set(course.id, {
+    nsSummary,
     result: row.querySelector(".course-result"),
     average: row.querySelector(".average-value"),
     status: row.querySelector(".status-cell")
@@ -312,6 +330,11 @@ function renderUnits() {
 
 function updateCourse(course, compensation) {
   const view = courseViews.get(course.id);
+  if (view.nsSummary) {
+    const ns = course.groups.find(group => group.id);
+    view.nsSummary.querySelector("output").textContent = fmt(ns.value);
+    view.nsSummary.querySelector(".ns-legacy").hidden = !ns.legacy;
+  }
   const average = course.average;
   const passed = average !== null && average >= 10;
   const compensated = compensation && average >= 7 && average < 10;
@@ -357,7 +380,7 @@ function update() {
 
   byId("semester-average").textContent = fmt(result.average);
   byId("semester-status").textContent = !result.bonusValid ? "Corrigez le bonus de l’UE Fondamentaux."
-    : result.entered === 0 ? "Les champs vides sont exclus du calcul."
+    : result.average === null ? "Les champs vides sont exclus du calcul."
     : result.complete ? "Moyenne pondérée par les ECTS." : "Moyenne provisoire, pondérée par les ECTS.";
   byId("progress-label").textContent = result.entered + " / " + TOTAL_ASSESSMENTS;
   byId("progress-fill").style.width = result.entered / TOTAL_ASSESSMENTS * 100 + "%";

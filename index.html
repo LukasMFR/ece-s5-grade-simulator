@@ -41,8 +41,8 @@
             <p class="metric-value" aria-live="polite"><strong id="semester-average">—</strong><span>/ 20</span></p>
             <p class="bonus-detail" id="semester-status">Les champs vides sont exclus du calcul.</p>
             <div class="progress-area">
-              <div class="progress-top"><span>Évaluations renseignées</span><strong id="progress-label">0 / 20</strong></div>
-              <div class="progress" id="progress-bar" role="progressbar" aria-label="Évaluations renseignées" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><span id="progress-fill"></span></div>
+              <div class="progress-top"><span>Évaluations renseignées</span><strong id="progress-label">0 / 24</strong></div>
+              <div class="progress" id="progress-bar" role="progressbar" aria-label="Évaluations renseignées" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0"><span id="progress-fill"></span></div>
             </div>
           </section>
 
@@ -79,6 +79,7 @@
                 <div><dt>Bases de gestion · coef. 1</dt><dd><code>DS1</code></dd></div>
                 <div><dt>UE Adaptabilité</dt><dd><code>(Travailler en entreprise + Bases de gestion) / 2</code></dd></div>
                 <div><dt>Anglais 5 · coef. 1</dt><dd><code>(3 × NS1 + DS1) / 4</code></dd></div>
+                <div><dt>NS1 d’anglais</dt><dd>Les cinq évaluations du NS1 comptent chacune pour 20 %.</dd></div>
                 <div><dt>Acquis Entreprise 5 · coef. 9</dt><dd><code>(2 × Évaluation entreprise + Rapport maître d’apprentissage + Rapport tuteur + 2 × Soutenance) / 6</code></dd></div>
                 <div><dt>Expérience Entreprise 5 · coef. 1</dt><dd>Retour d’expérience à valider séparément. La moyenne chiffrée de l’UE est celle d’Acquis Entreprise 5.</dd></div>
                 <div><dt>Moyenne générale</dt><dd><code>(16 × Fondamentaux + 2 × Adaptabilité + 2 × Développement + 10 × Expérience entreprise) / 30</code></dd></div>
@@ -170,6 +171,14 @@
         <span class="status-cell">—</span>
       </div>
     </article>
+  </template>
+
+  <template id="ns-summary-template">
+    <div class="ns-summary">
+      <strong>NS1 · coef. 3</strong>
+      <span><output aria-label="NS1 d’anglais sur 20">—</output> / 20</span>
+      <p class="ns-legacy" hidden>Ancien NS1 conservé tant que le détail est vide.</p>
+    </div>
   </template>
 
   <template id="note-template">
