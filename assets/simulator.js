@@ -183,6 +183,35 @@ function save() {
   }
 }
 
+function replaceNotes(notes) {
+  for (const key of Object.keys(data)) delete data[key];
+  Object.assign(data, notes);
+  for (const { id, input } of noteFields) {
+    const grade = parseGrade(data[id]);
+    input.value = Number.isFinite(grade) ? fmt(grade) : (data[id] || "");
+  }
+  for (const select of feedbackFields) select.value = data[select.id.slice("input-".length)] || "";
+  bonusInput.value = data.bonus || "";
+  save();
+  update();
+}
+
+function parseBackup(text) {
+  const backup = JSON.parse(text);
+  const notes = backup?.notes;
+  if (backup?.version !== 1 || !notes || typeof notes !== "object" || Array.isArray(notes)) {
+    throw new Error("Format de sauvegarde invalide");
+  }
+  const gradeIds = new Set(["bonus", ...noteFields.map(({ id }) => id)]);
+  const feedbackIds = new Set(feedbackFields.map(select => select.id.slice("input-".length)));
+  for (const [id, value] of Object.entries(notes)) {
+    if (gradeIds.has(id) && typeof value === "string") continue;
+    if (feedbackIds.has(id) && (value === "" || FEEDBACK_VALUES.includes(value))) continue;
+    throw new Error("Champ de sauvegarde invalide");
+  }
+  return notes;
+}
+
 function validateField(input, error, invalid, description = "") {
   input.classList.toggle("invalid", invalid);
   input.setAttribute("aria-invalid", String(invalid));
@@ -397,18 +426,48 @@ document.querySelector(".masthead-link").addEventListener("click", () => {
   byId("calculs").open = true;
 });
 
+byId("export-button").addEventListener("click", () => {
+  const exportedAt = new Date().toISOString();
+  const json = JSON.stringify({ version: 1, exportedAt, notes: data }, null, 2);
+  const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ece-s5-" + exportedAt.replaceAll(":", "-") + ".json";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+const importButton = byId("import-button");
+const importFile = byId("import-file");
+const backupStatus = byId("backup-status");
+importButton.addEventListener("click", () => importFile.click());
+importFile.addEventListener("change", async () => {
+  const file = importFile.files[0];
+  if (!file) return;
+  importButton.disabled = true;
+  backupStatus.textContent = "";
+  try {
+    const notes = parseBackup(await file.text());
+    replaceNotes(notes);
+    backupStatus.textContent = "Import terminé. La saisie a été remplacée.";
+  } catch {
+    backupStatus.textContent = "Import impossible. Choisissez un fichier JSON exporté par le simulateur.";
+  } finally {
+    importFile.value = "";
+    importButton.disabled = false;
+  }
+});
+
 resetButton.addEventListener("click", () => {
   resetDialog.returnValue = "";
   resetDialog.showModal();
 });
 resetDialog.addEventListener("close", () => {
   if (resetDialog.returnValue !== "reset") return;
-  for (const key of Object.keys(data)) delete data[key];
-  for (const { input } of noteFields) input.value = "";
-  for (const select of feedbackFields) select.value = "";
-  bonusInput.value = "";
-  save();
-  update();
+  replaceNotes({});
+  backupStatus.textContent = "";
   noteFields[0].input.focus();
 });
 

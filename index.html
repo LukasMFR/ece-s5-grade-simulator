@@ -56,10 +56,14 @@
           <section class="gradebook app-frame" id="notes" data-visual tabindex="-1" aria-labelledby="notes-title">
             <div class="gradebook-head">
               <h2 id="notes-title">Notes par matière</h2>
-              <button class="btn btn--secondary reset" id="reset-button" type="button" disabled>
-                Réinitialiser
-              </button>
+              <div class="gradebook-actions">
+                <button class="btn btn--secondary" id="export-button" type="button">Exporter en JSON</button>
+                <button class="btn btn--secondary" id="import-button" type="button">Importer un JSON</button>
+                <input id="import-file" type="file" accept=".json,application/json" hidden>
+                <button class="btn btn--secondary" id="reset-button" type="button" disabled>Réinitialiser</button>
+              </div>
             </div>
+            <p class="backup-status" id="backup-status" role="status"></p>
             <div id="notes-body"></div>
             <p class="gradebook-foot">Les marques ×2 et ×3 indiquent le poids de la note ou de son bloc.</p>
           </section>

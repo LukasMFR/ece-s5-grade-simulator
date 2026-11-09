@@ -83,7 +83,9 @@ h1 { margin-top: var(--s-3); color: var(--action); font: 800 clamp(44px, 4.7vw, 
 .unit-average { color: var(--action); font: 500 19px/1.2 var(--font-mono); }
 
 .gradebook, .rules { scroll-margin-top: var(--s-4); }
-.gradebook-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding-bottom: var(--s-3); border-bottom: 2px solid var(--brand); }
+.gradebook-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); padding-bottom: var(--s-3); border-bottom: 2px solid var(--brand); }
+.gradebook-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.backup-status:not(:empty) { padding-block: var(--s-2); color: var(--muted); font-size: 14px; }
 .gradebook-head h2 { font: var(--display-weight) clamp(25px, 2.6vw, 38px)/1.1 var(--font-display); letter-spacing: var(--display-tracking); }
 .btn { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); padding: var(--s-2) var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); cursor: pointer; font-size: 14px; font-weight: 550; }
 .btn--primary { background: var(--action); color: var(--action-ink); border-color: var(--action); }
@@ -195,7 +197,7 @@ dialog p { margin-top: var(--s-2); color: var(--muted); }
 @media print {
   body { background: white; }
   .wrap { width: 100%; }
-  .masthead-link, .reset, dialog { display: none; }
+  .masthead-link, .gradebook-actions, .backup-status, dialog { display: none; }
   .hero { padding-block: var(--s-4); }
   .course { break-inside: avoid; }
 }
