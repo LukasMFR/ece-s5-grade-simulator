@@ -272,7 +272,7 @@ function renderCourse(course) {
       badge.className = "block-badge";
       badge.textContent = group.id ? multiplier + " %" : "×" + multiplier;
       badge.setAttribute("aria-hidden", "true");
-      label.append(badge);
+      label.append(" ", badge);
       const weighting = group.id ? multiplier + " % du NS1" : "coefficient " + multiplier;
       input.setAttribute("aria-label", input.getAttribute("aria-label") + ", " + weighting);
     }

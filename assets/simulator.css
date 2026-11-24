@@ -111,6 +111,7 @@ h1 { margin-top: var(--s-3); color: var(--action); font: 800 clamp(44px, 4.7vw, 
 .ns-summary { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-1) var(--s-2); padding-bottom: var(--s-1); border-bottom: 1px solid var(--line); font-size: 13px; }
 .ns-summary output { color: var(--action); font: 500 13px/1.5 var(--font-mono); }
 .ns-summary ~ .note-field { align-self: stretch; grid-template-rows: 1fr auto; }
+.ns-summary ~ .note-field .grade-confirmation { align-items: baseline; }
 .ns-summary ~ .note-field:last-child { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: var(--s-2); }
 .ns-summary ~ .note-field:last-child .note-input { max-width: 100px; }
 .feedback-course .course-fields { display: block; grid-column: 2 / -1; }
