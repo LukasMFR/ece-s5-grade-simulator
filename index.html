@@ -64,6 +64,7 @@
               </div>
             </div>
             <p class="backup-status" id="backup-status" role="status"></p>
+            <p class="grade-confirmation-hint">Touchez le libellé d’une note saisie pour la marquer comme réelle.</p>
             <div id="notes-body"></div>
             <p class="gradebook-foot">Les marques ×2 et ×3 indiquent le poids de la note ou de son bloc.</p>
           </section>
@@ -186,7 +187,10 @@
 
   <template id="note-template">
     <div class="note-field">
-      <label></label>
+      <button class="grade-confirmation" type="button" aria-pressed="false">
+        <span class="grade-label"></span>
+        <span class="grade-check" aria-hidden="true">✓</span>
+      </button>
       <input class="note-input" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="—">
       <span class="cell-error" hidden>De 0 à 20</span>
     </div>

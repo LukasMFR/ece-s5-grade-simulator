@@ -144,6 +144,7 @@ const fmt = value => value === null ? "—" : format2.format(value);
 const byId = id => document.getElementById(id);
 
 const data = Object.create(null);
+const confirmedGrades = new Set();
 const noteFields = [];
 const courseViews = new Map();
 const unitViews = new Map();
@@ -163,6 +164,8 @@ function load() {
       for (const group of course.groups) {
         for (const note of group.notes) {
           if (typeof stored[note.id] === "string") data[note.id] = stored[note.id];
+          if (Array.isArray(stored.confirmedGrades) && stored.confirmedGrades.includes(note.id)
+              && Number.isFinite(parseGrade(data[note.id]))) confirmedGrades.add(note.id);
         }
       }
     }
@@ -177,18 +180,20 @@ function load() {
 
 function save() {
   try {
-    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORE_KEY, JSON.stringify({ ...data, confirmedGrades: [...confirmedGrades] }));
   } catch {
     storageFail();
   }
 }
 
-function replaceNotes(notes) {
+function replaceNotes(notes, confirmedIds = []) {
   for (const key of Object.keys(data)) delete data[key];
   Object.assign(data, notes);
+  confirmedGrades.clear();
   for (const { id, input } of noteFields) {
     const grade = parseGrade(data[id]);
     input.value = Number.isFinite(grade) ? fmt(grade) : (data[id] || "");
+    if (confirmedIds.includes(id) && Number.isFinite(grade)) confirmedGrades.add(id);
   }
   for (const select of feedbackFields) select.value = data[select.id.slice("input-".length)] || "";
   bonusInput.value = data.bonus || "";
@@ -209,7 +214,11 @@ function parseBackup(text) {
     if (feedbackIds.has(id) && (value === "" || FEEDBACK_VALUES.includes(value))) continue;
     throw new Error("Champ de sauvegarde invalide");
   }
-  return notes;
+  const confirmedIds = backup.confirmedGrades ?? [];
+  if (!Array.isArray(confirmedIds) || confirmedIds.some(id => typeof id !== "string")) {
+    throw new Error("Marques de confirmation invalides");
+  }
+  return { notes, confirmedIds };
 }
 
 function validateField(input, error, invalid, description = "") {
@@ -246,15 +255,16 @@ function renderCourse(course) {
       fields.append(nsSummary);
     }
     const field = byId("note-template").content.firstElementChild.cloneNode(true);
-    const label = field.querySelector("label");
+    const confirmation = field.querySelector(".grade-confirmation");
+    const label = field.querySelector(".grade-label");
     const input = field.querySelector("input");
     const error = field.querySelector(".cell-error");
     const name = noteLabel(note);
 
     input.id = "input-" + note.id;
     error.id = "error-" + note.id;
-    label.htmlFor = input.id;
     label.textContent = name;
+    confirmation.setAttribute("aria-label", "Note réelle · " + course.title + " · " + name);
     input.setAttribute("aria-label", course.title + " — " + name + " sur 20");
     const multiplier = group.id ? note.weight : group.weight > 1 ? group.weight : note.weight;
     if (multiplier > 1) {
@@ -269,7 +279,14 @@ function renderCourse(course) {
 
     const initial = parseGrade(data[note.id]);
     input.value = Number.isFinite(initial) ? fmt(initial) : (data[note.id] || "");
+    confirmation.addEventListener("click", () => {
+      if (confirmedGrades.has(note.id)) confirmedGrades.delete(note.id);
+      else confirmedGrades.add(note.id);
+      confirmation.setAttribute("aria-pressed", String(confirmedGrades.has(note.id)));
+      save();
+    });
     input.addEventListener("input", () => {
+      if (data[note.id] !== input.value) confirmedGrades.delete(note.id);
       data[note.id] = input.value;
       save();
       update();
@@ -291,7 +308,7 @@ function renderCourse(course) {
       else input.blur();
     });
 
-    noteFields.push({ id: note.id, input, error });
+    noteFields.push({ id: note.id, input, error, confirmation });
     fields.append(field);
   }
 
@@ -386,8 +403,11 @@ function unitStatus(unit, bonusValid) {
 }
 
 function update() {
-  for (const { id, input, error } of noteFields) {
-    validateField(input, error, Number.isNaN(parseGrade(data[id])));
+  for (const { id, input, error, confirmation } of noteFields) {
+    const grade = parseGrade(data[id]);
+    validateField(input, error, Number.isNaN(grade));
+    confirmation.disabled = !Number.isFinite(grade);
+    confirmation.setAttribute("aria-pressed", String(confirmedGrades.has(id)));
   }
 
   const result = calculate(data);
@@ -428,7 +448,7 @@ document.querySelector(".masthead-link").addEventListener("click", () => {
 
 byId("export-button").addEventListener("click", () => {
   const exportedAt = new Date().toISOString();
-  const json = JSON.stringify({ version: 1, exportedAt, notes: data }, null, 2);
+  const json = JSON.stringify({ version: 1, exportedAt, notes: data, confirmedGrades: [...confirmedGrades] }, null, 2);
   const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
   const link = document.createElement("a");
   link.href = url;
@@ -449,8 +469,8 @@ importFile.addEventListener("change", async () => {
   importButton.disabled = true;
   backupStatus.textContent = "";
   try {
-    const notes = parseBackup(await file.text());
-    replaceNotes(notes);
+    const { notes, confirmedIds } = parseBackup(await file.text());
+    replaceNotes(notes, confirmedIds);
     backupStatus.textContent = "Import terminé. La saisie a été remplacée.";
   } catch {
     backupStatus.textContent = "Import impossible. Choisissez un fichier JSON exporté par le simulateur.";

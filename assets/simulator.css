@@ -86,6 +86,7 @@ h1 { margin-top: var(--s-3); color: var(--action); font: 800 clamp(44px, 4.7vw, 
 .gradebook-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); padding-bottom: var(--s-3); border-bottom: 2px solid var(--brand); }
 .gradebook-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .backup-status:not(:empty) { padding-block: var(--s-2); color: var(--muted); font-size: 14px; }
+.grade-confirmation-hint { padding-block: var(--s-2); color: var(--muted); font-size: 13px; }
 .gradebook-head h2 { font: var(--display-weight) clamp(25px, 2.6vw, 38px)/1.1 var(--font-display); letter-spacing: var(--display-tracking); }
 .btn { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); padding: var(--s-2) var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); color: var(--ink); cursor: pointer; font-size: 14px; font-weight: 550; }
 .btn--primary { background: var(--action); color: var(--action-ink); border-color: var(--action); }
@@ -116,6 +117,15 @@ h1 { margin-top: var(--s-3); color: var(--action); font: 800 clamp(44px, 4.7vw, 
 .feedback-select { min-height: 44px; width: 100%; max-width: 260px; padding-inline: var(--s-2); border: 0; border-bottom: 1px solid var(--line-strong); border-radius: var(--radius) var(--radius) 0 0; background: var(--field); color: var(--ink); }
 .note-field { display: grid; min-width: 0; gap: var(--s-1); }
 .note-field label { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--s-1); color: var(--muted); font-size: 13px; font-weight: 550; }
+.grade-confirmation { display: flex; align-items: center; gap: var(--s-1); min-height: 28px; padding: 0; border: 0; background: none; color: var(--muted); text-align: left; font-size: 13px; font-weight: 550; cursor: pointer; transition: color var(--m-in), transform var(--m-press); }
+.grade-confirmation:disabled { cursor: default; }
+.grade-confirmation:not(:disabled):active { transform: translateY(1px); }
+.grade-confirmation[aria-pressed="true"], .grade-confirmation[aria-pressed="true"] .block-badge { color: var(--green); }
+.grade-check { display: inline-grid; flex: 0 0 12px; place-items: center; height: 12px; border: 1px solid currentColor; border-radius: 50%; font: 700 8px/1 system-ui, sans-serif; opacity: 0; transform: scale(.8); transition: opacity var(--m-in), transform var(--m-in); }
+.grade-confirmation[aria-pressed="true"] .grade-check { opacity: 1; transform: scale(1); }
+@media (hover: hover) {
+  .grade-confirmation:not(:disabled):hover .grade-label { text-decoration: underline; text-underline-offset: 2px; }
+}
 .block-badge { color: var(--action); white-space: nowrap; font: 500 12px/1.4 var(--font-mono); }
 .note-input { width: 100%; min-width: 0; height: 44px; padding: var(--s-1); border: 0; border-bottom: 1px solid var(--line-strong); border-radius: var(--radius) var(--radius) 0 0; background: var(--field); color: var(--ink); text-align: center; font: 500 16px/1 var(--font-mono); transition: border-color var(--m-in), background-color var(--m-in); }
 .note-input::placeholder { color: var(--muted); opacity: 1; }
@@ -192,12 +202,13 @@ dialog p { margin-top: var(--s-2); color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
+  .grade-confirmation:not(:disabled):active { transform: none; }
 }
 
 @media print {
   body { background: white; }
   .wrap { width: 100%; }
-  .masthead-link, .gradebook-actions, .backup-status, dialog { display: none; }
+  .masthead-link, .gradebook-actions, .backup-status, .grade-confirmation-hint, dialog { display: none; }
   .hero { padding-block: var(--s-4); }
   .course { break-inside: avoid; }
 }
